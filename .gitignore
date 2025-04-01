@@ -1,0 +1,23 @@
+# IDE Folder
+.fleet
+.idea
+.nova
+.vscode
+.zed
+
+# General Confidential File
+.env
+.env.backup
+.env.production
+auth.json
+
+# Modules Folder
+vendor
+node_modules
+
+# Auto Generated File
+npm-debug.log
+yarn-error.log
+.phpunit.cache
+.phpactor.json
+.phpunit.result.cache
