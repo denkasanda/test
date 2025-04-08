@@ -18,24 +18,25 @@ jobs:
           # Memastikan folder libs/ sudah ada dan membuat sub-folder jika diperlukan
           mkdir -p libs
 
-      - name: Move all files in root (except .gitignore, .github, and libs) to the correct libs/{nama_libs} folder
+      - name: Move files to appropriate libs folder
         run: |
-          # Menentukan file yang tidak perlu dipindahkan
+          echo "Memindahkan file dari root ke libs/{nama_libs}"
           EXCLUDE_FILES=".gitignore .github libs"
           
           # Loop untuk mencari folder yang ada di dalam libs/
           for dir in libs/*/; do
-            # Memeriksa apakah folder ada (dalam kasus ini kita ingin memastikan itu adalah folder)
             if [ -d "$dir" ]; then
-              # Loop untuk memindahkan file ke folder yang sesuai di dalam libs/{nama_libs}
+              echo "Folder found: $dir"
+              # Loop untuk memindahkan file ke folder yang sesuai
               for file in $(ls); do
                 if [[ ! " ${EXCLUDE_FILES} " =~ " ${file} " && -f "$file" ]]; then
-                  echo "Moving $file to $dir"
-                  git mv "$file" "$dir" || echo "Skipping $file as it was already moved or not found"
+                  echo "Memindahkan $file ke $dir"
+                  git mv "$file" "$dir" || echo "Skipping $file, already moved or not found"
                 fi
               done
             fi
           done
+
 
       - name: Commit the moved/updated files
         run: |
