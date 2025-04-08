@@ -20,7 +20,7 @@ jobs:
           echo "Commit message: $COMMIT_MESSAGE"
           
           if [[ "$COMMIT_MESSAGE" =~ (libs|[^/]+/libs)/([^ ]+) ]]; then
-            REPO_NAME=$(echo "$COMMIT_MESSAGE" | sed -E 's/.*\/([^\/]+)$/\1/')
+            LIB_NAME=$(echo "$COMMIT_MESSAGE" | sed -E 's/.*\/([^\/]+)$/\1/')
             echo "Repository name: $REPO_NAME"
             echo "lib_name=$LIB_NAME" >> $GITHUB_ENV
           else
