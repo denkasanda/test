@@ -1,0 +1,19 @@
+{
+    "name": "it-office-mikroskil/larashare",
+    "description": "MIT",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "ItOfficeMikroskil\\Larashare\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Dhean Kasanda",
+            "email": "denkasanda@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {}
+}
