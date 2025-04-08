@@ -19,7 +19,7 @@ jobs:
           COMMIT_MESSAGE=$(git log -1 --pretty=%B)
           echo "Commit message: $COMMIT_MESSAGE"
           
-          REPO_NAME=$(echo "COMMIT_MESSAGE" | sed -E 's/.*\/([^\/]+)$/\1/')
+          REPO_NAME=$(echo "$COMMIT_MESSAGE" | sed -E 's/.*\/([^\/]+)$/\1/')
           echo "Repository name: $REPO_NAME"
           
           if [[ "$COMMIT_MESSAGE" =~ (libs|[^/]+/libs)/([^ ]+) ]]; then
