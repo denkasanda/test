@@ -1,54 +1,29 @@
-name: Automate File Move and Update on Merge
+name: Sync libs/mylibs to main with commit history
 
 on:
   push:
     branches:
-      - main  # Workflow ini akan dijalankan saat ada push ke branch main
+      - libs/mylibs
+    # Trigger ini akan berjalan ketika ada perubahan di branch libs/mylibs
 
 jobs:
-  move-and-update-files:
+  sync-libs-to-main:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout the repository
         uses: actions/checkout@v3
 
-      - name: Extract source branch name
-        id: extract_branch
-        run: |
-          COMMIT_MESSAGE=$(git log -1 --pretty=%s)
-          echo "Commit message: $COMMIT_MESSAGE"
-          
-          if [[ "$COMMIT_MESSAGE" =~ (libs|[^/]+/libs)/([^ ]+) ]]; then
-            LIB_NAME=$(echo "$COMMIT_MESSAGE" | sed -E 's/.*\/([^\/]+)$/\1/')
-            echo "Repository name: $LIB_NAME"
-            echo "lib_name=$LIB_NAME" >> $GITHUB_ENV
-          else
-            echo "No merge from libs/* branch detected. Skipping."
-            exit 0
-          fi
+      - name: Checkout main branch
+        run: git checkout main
 
-      - name: Move files to libs/{lib_name}
-        run: |
-          echo "Library name from environment: $lib_name"
-          mkdir -p libs/$lib_name
+      - name: Fetch libs/mylibs branch
+        run: git fetch origin libs/mylibs
 
-          for file in $(ls -A); do
-            echo "file: $file"
-            if [[ "$file" != "libs" && "$file" != ".git" && "$file" != ".github" && "$file" != ".gitignore" ]]; then
-              echo "Moving $file to libs/$lib_name"
-              git mv "$file" "libs/$lib_name/" || echo "Skipping $file, already moved or not found"
-            fi
-          done
-        env:
-          lib_name: ${{ env.lib_name }}
-
-      - name: Commit and push changes
+      - name: Merge libs/mylibs to main with subtree
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add .
-          git commit -m "Move files to libs/$lib_name after merge" || echo "No changes to commit"
+          git merge --no-ff --allow-unrelated-histories -m "Merge libs/mylibs into main" origin/libs/mylibs --strategy=recursive --strategy-option=subtree=libs/mylibs
+
+      - name: Commit and push changes to main
+        run: |
           git push origin main
-        env:
-          lib_name: ${{ env.lib_name }}
