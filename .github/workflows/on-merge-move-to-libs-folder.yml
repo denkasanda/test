@@ -13,34 +13,35 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Ensure libs/{nama_libs} folders exist
+      - name: Extract source branch name
+        id: extract_branch
         run: |
-          # Memastikan folder libs/ sudah ada dan membuat sub-folder jika diperlukan
-          mkdir -p libs
+          COMMIT_MESSAGE=$(git log -1 --pretty=%B)
+          echo "Commit message: $COMMIT_MESSAGE"
+          if [[ "$COMMIT_MESSAGE" =~ Merge\ pull\ request\ #[0-9]+\ from\ libs\/([^\ ]+) ]]; then
+            LIB_NAME=${BASH_REMATCH[1]}
+            echo "Library name: $LIB_NAME"
+            echo "lib_name=$LIB_NAME" >> $GITHUB_ENV
+            else
+            echo "No merge from libs/* branch detected. Skipping."
+            exit 0
+          fi
 
-      - name: Move all files in root (except .gitignore, .github, and libs) to the correct libs/{nama_libs} folder
+      - name: Move files to libs/{lib_name}
         run: |
-          # Menentukan file yang tidak perlu dipindahkan
-          EXCLUDE_FILES=".gitignore .github libs"
-          
-          # Loop untuk mencari folder yang ada di dalam libs/
-          for dir in libs/*/; do
-            # Memeriksa apakah folder ada (dalam kasus ini kita ingin memastikan itu adalah folder)
-            if [ -d "$dir" ]; then
-              # Loop untuk memindahkan file ke folder yang sesuai di dalam libs/{nama_libs}
-              for file in $(ls); do
-                if [[ ! " ${EXCLUDE_FILES} " =~ " ${file} " && -f "$file" ]]; then
-                  echo "Moving $file to $dir"
-                  git mv "$file" "$dir" || echo "Skipping $file as it was already moved or not found"
-                fi
-              done
+          mkdir -p libs/$lib_name
+
+          for file in $(ls -A); do
+            if [[ "$file" != "libs" && "$file" != ".git" && "$file" != ".github" && "$file" != ".gitignore" ]]; then
+              echo "Moving $file to libs/$lib_name"
+              git mv "$file" "libs/$lib_name/" || echo "Skipping $file, already moved or not found"
             fi
           done
 
-      - name: Commit the moved/updated files
+      - name: Commit and push changes
         run: |
-          git config --global user.name "github-actions"
-          git config --global user.email "github-actions@github.com"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
           git add .
-          git commit -m "Move and update root files to the correct libs/{nama_libs} folder after merge" || echo "No changes to commit"
+          git commit -m "Move files to libs/$lib_name after merge" || echo "No changes to commit"
           git push origin main
