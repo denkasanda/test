@@ -1,0 +1,19 @@
+{
+    "name": "it-office-mikroskil/laralibs",
+    "description": "asd",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "ItOfficeMikroskil\\Laralibs\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Dhean Kasanda",
+            "email": "denkasanda@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {}
+}
