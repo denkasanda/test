@@ -21,7 +21,7 @@ jobs:
           if [[ "$COMMIT_MESSAGE" =~ (libs|[^/]+/libs)/([^ ]+) ]]; then
             LIB_NAME=${BASH_REMATCH[2]}
             echo "Library name: $LIB_NAME"
-            echo "lib_name=$LIB_NAME" >> $GITHUB_ENV
+            echo "lib_name=$LIB_NAME"
           else
             echo "No merge from libs/* branch detected. Skipping."
             exit 0
