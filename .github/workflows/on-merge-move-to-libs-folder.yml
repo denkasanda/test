@@ -16,7 +16,7 @@ jobs:
       - name: Extract source branch name
         id: extract_branch
         run: |
-          COMMIT_MESSAGE=$(git log -1 --pretty=%B)
+          COMMIT_MESSAGE=$(git log -1 --pretty=%s)
           echo "Commit message: $COMMIT_MESSAGE"
           REPO_NAME=$(echo "$COMMIT_MESSAGE" | sed -E 's/.*\/([^\/]+)$/\1/')
           echo "Repository name: $REPO_NAME"
