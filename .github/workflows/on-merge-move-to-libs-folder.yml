@@ -13,13 +13,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Ensure libs/{nama_libs} folders exist
+      - name: Commit the moved/updated files
         run: |
           # Memastikan folder libs/ sudah ada dan membuat sub-folder jika diperlukan
           mkdir -p libs
-
-      - name: Move files to appropriate libs folder
-        run: |
           echo "Memindahkan file dari root ke libs/{nama_libs}"
           EXCLUDE_FILES=".gitignore .github libs"
           
@@ -36,10 +33,6 @@ jobs:
               done
             fi
           done
-
-
-      - name: Commit the moved/updated files
-        run: |
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
           git add .
