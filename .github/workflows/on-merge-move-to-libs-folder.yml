@@ -18,8 +18,15 @@ jobs:
         run: |
           COMMIT_MESSAGE=$(git log -1 --pretty=%B)
           echo "Commit message: $COMMIT_MESSAGE"
-          if [[ "$COMMIT_MESSAGE" =~ Merge\ pull\ request\ #[0-9]+\ from\ libs\/([^\ ]+) ]]; then
-            LIB_NAME=${BASH_REMATCH[1]}
+          if [[ "$COMMIT_MESSAGE" =~ Merge\ pull\ request\ #[0-9]+\ from\ libs/([^\ ]+) || "$COMMIT_MESSAGE" =~ ([^/]+)\/libs\/([^\ ]+) ]]; then
+            # Cek format pertama (Merge PR from libs/{nama_libs})
+            if [[ -n "${BASH_REMATCH[1]}" ]]; then
+              LIB_NAME=${BASH_REMATCH[1]}
+            # Cek format kedua ({username}/libs/{nama_libs})
+            elif [[ -n "${BASH_REMATCH[2]}" ]]; then
+              LIB_NAME=${BASH_REMATCH[2]}
+            fi
+  
             echo "Library name: $LIB_NAME"
             echo "lib_name=$LIB_NAME" >> $GITHUB_ENV
           else
