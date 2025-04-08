@@ -36,7 +36,7 @@ jobs:
 
           # Pindahkan semua file dari root ke folder libs/{lib_name}, kecuali file/folder tertentu
           for file in $(ls -A); do
-            if [[ "$file" != "libs" && "$file" != ".git" && "$file" != ".github" ]]; then
+            if [[ "$file" != "libs" && "$file" != ".git" && "$file" != ".github" && "$file" != ".gitignore" ]]; then
               echo "Moving $file to libs/$lib_name"
               git mv "$file" "libs/$lib_name/" || echo "Skipping $file, already moved or not found"
             fi
