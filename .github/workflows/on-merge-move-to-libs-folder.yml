@@ -21,7 +21,7 @@ jobs:
           
           if [[ "$COMMIT_MESSAGE" =~ (libs|[^/]+/libs)/([^ ]+) ]]; then
             LIB_NAME=$(echo "$COMMIT_MESSAGE" | sed -E 's/.*\/([^\/]+)$/\1/')
-            echo "Repository name: $REPO_NAME"
+            echo "Repository name: $LIB_NAME"
             echo "lib_name=$LIB_NAME" >> $GITHUB_ENV
           else
             echo "No merge from libs/* branch detected. Skipping."
@@ -34,6 +34,7 @@ jobs:
           mkdir -p libs/$lib_name
 
           for file in $(ls -A); do
+            echo "file: $file"
             if [[ "$file" != "libs" && "$file" != ".git" && "$file" != ".github" && "$file" != ".gitignore" ]]; then
               echo "Moving $file to libs/$lib_name"
               git mv "$file" "libs/$lib_name/" || echo "Skipping $file, already moved or not found"
